@@ -22,13 +22,19 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 public class reservationUI {
 	public void open() {
-		Login_UI id = new Login_UI();
-		int rnum = (int) (Math.random() * 9999);
+		Main id = new Main();
+		//예약 번호 자동 생성 (db에 가장높은 번호 불러와서 1씩 +)
+		reservationDAO dao = new reservationDAO();
+		reservationVO bag_max=new reservationVO();
+		bag_max=dao.no_max();
+		int rnum=bag_max.getMax_no()+1;
+		
+		
 		String rid = id.getId();
 
 		JFrame f = new JFrame();
 		f.setTitle("예약");
-		f.setSize(515, 700);
+		f.setSize(515, 720);
 
 		JLabel rnumLabel = new JLabel("예약번호 ");
 		JLabel rnumLabel2 = new JLabel(String.valueOf(rnum));
@@ -39,12 +45,12 @@ public class reservationUI {
 		JLabel placeLable = new JLabel("예약 장소");
 		JLabel nLable = new JLabel("0");
 
-		JButton minusButton = new JButton("-");
-		JButton plusButton = new JButton("+");
-		JButton reserveButton = new JButton("예약");
+		JButton minusButton = new RoundedButton("-");
+		JButton plusButton = new RoundedButton("+");
+		JButton reserveButton = new RoundedButton("예약");
 
-		Font font = new Font("D2Coding", Font.BOLD, 30);
-		Font font2 = new Font("D2Coding", Font.BOLD, 20);
+		Font font = new Font("돋움", Font.BOLD, 30);
+		Font font2 = new Font("돋움", Font.BOLD, 20);
 
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
@@ -52,6 +58,10 @@ public class reservationUI {
 		JPanel p6 = new JPanel();
 		JPanel p7 = new JPanel();
 
+		Color backC = new Color(250, 245, 224);
+		Color btnC = new Color(251, 206, 177);
+		Color fontC = new Color(247, 99, 12);
+		
 		p1.setBounds(0, 0, 500, 50);
 		p2.setBounds(50, 30, 400, 550);
 		p5.setBounds(0, 600, 500, 100);
@@ -60,10 +70,8 @@ public class reservationUI {
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
 
-		reservationDAO dao = new reservationDAO();
-
 		List<String> placeList;
-		placeList = dao.place(); 
+		placeList = dao.place();
 
 		JComboBox<String> cb = new JComboBox<>(placeList.toArray(new String[placeList.size()]));
 
@@ -71,7 +79,7 @@ public class reservationUI {
 		// String date = model.getYear() + "-" + (model.getMonth() + 1) + "-" +
 		// model.getDay();
 
-		reserveButton.setPreferredSize(new Dimension(500, 60));
+		reserveButton.setPreferredSize(new Dimension(470, 60));
 
 		f.setLayout(null);
 
@@ -91,7 +99,7 @@ public class reservationUI {
 		p6.add(rnumLabel2);
 		p7.add(idLabel);
 		p7.add(idLabel2);
-		p2.setBackground(Color.pink);
+		p2.setBackground(backC);
 
 		peopleLabel.setBounds(70, 70, 200, 50);//200, 100, 300, 200
 		minusButton.setBounds(230, 70, 55, 50);
@@ -104,24 +112,27 @@ public class reservationUI {
 		placeLable.setBounds(70, 450, 200, 50);
 		cb.setBounds(230, 460, 190, 30);
 		
-		cb.setBackground(Color.white);
-		datePicker.setBackground(Color.pink);
+		cb.setBackground(btnC);
+		datePicker.setBackground(backC);
 		
-		minusButton.setBackground(Color.white);
+		minusButton.setBackground(btnC);
+		minusButton.setForeground(fontC);
 		minusButton.setBorderPainted(false);
 		
-		plusButton.setBackground(Color.white);
+		plusButton.setBackground(btnC);
+		plusButton.setForeground(fontC);
 		plusButton.setBorderPainted(false);
 		
 		reserveButton.setBorderPainted(false);
-		reserveButton.setBackground(Color.pink);
+		reserveButton.setBackground(btnC);
+		reserveButton.setForeground(fontC);
 		
 		rnumLabel.setFont(font2);
 		rnumLabel2.setFont(font2);
-		rnumLabel2.setForeground(Color.pink);
+		rnumLabel2.setForeground(btnC);
 		idLabel.setFont(font2);
 		idLabel2.setFont(font2);
-		idLabel2.setForeground(Color.pink);
+		idLabel2.setForeground(btnC);
 		peopleLabel.setFont(font);
 		peopleLabel.setFont(font);
 		timeLable.setFont(font);
@@ -134,11 +145,11 @@ public class reservationUI {
 		f.add(p1);
 		f.add(p2);
 		f.add(p5);
-		f.getContentPane().setBackground(Color.white);
-		p1.setBackground(Color.white);
-		p5.setBackground(Color.white);
-		p6.setBackground(Color.white);
-		p7.setBackground(Color.white);
+		f.getContentPane().setBackground(backC);
+		p1.setBackground(backC);
+		p5.setBackground(backC);
+		p6.setBackground(backC);
+		p7.setBackground(backC);
 
 		minusButton.addActionListener(new ActionListener() {
 
@@ -190,7 +201,7 @@ public class reservationUI {
 					bag.setR_time(rtime);
 
 					dao.insert(bag);
-					
+
 					reservationUI2 RUI2 = new reservationUI2();
 					RUI2.open();
 					f.setVisible(false);

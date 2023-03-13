@@ -1,8 +1,8 @@
 package uiConnect;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,16 +18,28 @@ import dbConnect.PlaceDAO;
 
 
 public class PlaceUI {
+	
+	private static String place_code;
+	
+
+	public static String getPlace_code() {
+		return place_code;
+	}
+
 
 	public void open() {
 		// 지점 UI 만들기
 		JFrame f = new JFrame();
-		FlowLayout lay = new FlowLayout();
 		f.setSize(480, 715);
 		f.setTitle("지점 정보");
-		f.setLayout(lay);
+		f.setLayout(null);
+		f.getContentPane().setBackground(new Color(250,245,224));
 		
-		Font font_title = new Font("돋움", 1, 40);
+		Panel p = new Panel();
+		p.setBounds(0, 0, 480, 715);
+		p.setBackground(new Color(250,245,224));
+		
+		// Font font_title = new Font("돋움", 1, 40);
 		Font font = new Font("돋움", 1, 30);
 
 		JTextField text_name = new JTextField(8);
@@ -62,39 +74,44 @@ public class PlaceUI {
 		ImageIcon icon = new ImageIcon("first.jpg");
 		label_img.setIcon(icon);
 
-		JButton btn_find = new JButton("게시물 검색");
-		JButton btn_pass = new JButton("게시물 보기");
-		JButton btn_update = new JButton("게시물 수정");
-		JButton btn_del = new JButton("게시물 삭제");
-		JButton btn_reservation = new JButton("예약하기");
+		RoundedButton btn_find = new RoundedButton("상호명 검색");
+		RoundedButton btn_pass = new RoundedButton("게시물 보기");
+		RoundedButton btn_update = new RoundedButton("정 보  수 정");
+		RoundedButton btn_write = new RoundedButton("게시물 작성");
+		RoundedButton btn_reservation = new RoundedButton("예약하기");
 		btn_find.setFont(font);
 		btn_pass.setFont(font);
 		btn_update.setFont(font);
-		btn_del.setFont(font);
+		btn_write.setFont(font);
 		btn_reservation.setFont(font);
-		btn_find.setBackground(Color.LIGHT_GRAY);
-		btn_pass.setBackground(Color.LIGHT_GRAY);
-		btn_update.setBackground(Color.LIGHT_GRAY);
-		btn_del.setBackground(Color.LIGHT_GRAY);
-		btn_reservation.setForeground(Color.yellow);
-		btn_reservation.setBackground(Color.blue);
+		btn_find.setForeground(new Color(247, 99, 12));
+		btn_pass.setForeground(new Color(247, 99, 12));
+		btn_update.setForeground(new Color(247, 99, 12));
+		btn_write.setForeground(new Color(247, 99, 12));
+		btn_reservation.setForeground(new Color(247, 99, 12));
+		btn_find.setBackground(new Color(251, 206, 177));
+		btn_pass.setBackground(new Color(251, 206, 177));
+		btn_update.setBackground(new Color(251, 206, 177));
+		btn_write.setBackground(new Color(251, 206, 177));
+		btn_reservation.setBackground(new Color(251, 206, 177));
 
-		f.add(label_name);
-		f.add(text_name);
-		f.add(label_img);
-		f.add(label_location);
-		f.add(text_location);
-		f.add(label_category);
-		f.add(text_category);
-		f.add(label_grade);
-		f.add(text_grade);
-		f.add(label_tel);
-		f.add(text_tel);
-		f.add(btn_find);
-		f.add(btn_pass);
-		f.add(btn_update);
-		f.add(btn_del);
-		f.add(btn_reservation);
+		f.add(p);
+		p.add(label_name);
+		p.add(text_name);
+		p.add(label_img);
+		p.add(label_location);
+		p.add(text_location);
+		p.add(label_category);
+		p.add(text_category);
+		p.add(label_grade);
+		p.add(text_grade);
+		p.add(label_tel);
+		p.add(text_tel);
+		p.add(btn_find);
+		p.add(btn_pass);
+		p.add(btn_update);
+		p.add(btn_write);
+		p.add(btn_reservation);
 
 		// 게시물 찾기
 		btn_find.addActionListener(new ActionListener() {
@@ -107,11 +124,16 @@ public class PlaceUI {
 				// 이미지 넣기....
 				PlaceDAO dao = new PlaceDAO();
 				PlaceVO bag = dao.one(name);
+				
+				// post에서 불러옴..........
+				PlaceVO bag2 = dao.avg_grade(bag.getPlace_code());
 				if (bag != null) {
 					text_location.setText(bag.getPlace_location());
 					text_category.setText(bag.getPlace_category());
-					text_grade.setText(bag.getPlace_grade());
+					text_grade.setText(bag2.getAvg_grade());
 					text_tel.setText(bag.getPlace_tel());
+					System.out.println("지점 코드 : " + bag.getPlace_code());
+					
 					if (bag.getPlace_img() != null) {
 						ImageIcon icon = new ImageIcon(bag.getPlace_img());
 						label_img.setIcon(icon);
@@ -136,10 +158,31 @@ public class PlaceUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Post_UI_in post = new Post_UI_in();
-				post.Post_ui();
-				// 화면 닫는거
-				// f.setVisible(false);
+				System.out.println("해당 게시물 보기");
+				String name = text_name.getText();
+				
+				
+				PlaceDAO dao = new PlaceDAO();
+				PlaceVO bag = dao.one(name);
+				if (bag != null) {
+					place_code=bag.getPlace_code();
+					Post_UI1 post = new Post_UI1();
+					post.open();
+					// 화면 닫는거
+					// f.setVisible(false);
+					
+				} else {
+					JOptionPane.showMessageDialog(f, "찾으시는 상호명이 없습니다.");
+					text_location.setText("");
+					text_category.setText("");
+					text_grade.setText("");
+					text_tel.setText("");
+					ImageIcon icon = new ImageIcon("first.jpg");
+					label_img.setIcon(icon);
+				}
+				
+				
+
 			}
 		});
 
@@ -171,37 +214,40 @@ public class PlaceUI {
 				}
 			}
 		});
-
-		btn_del.addActionListener(new ActionListener() {
+		
+		btn_write.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("해당 게시물 작성");
 				String name = text_name.getText();
-
-				if (name.equals("")) {
-					System.out.println("상호명은 필수입력항목입니다.");
-				}
-
-				System.out.println("지점 삭체 처리");
+				
+				
 				PlaceDAO dao = new PlaceDAO();
-				int result = dao.del(name);
-				if (result >= 1) {
-					JOptionPane.showMessageDialog(f, "상호명 삭제 성공");
-					text_name.setText("");
-					text_location.setText("");
-					text_category.setText("");
-					text_grade.setText("");
-					text_tel.setText("");
+				PlaceVO bag = dao.one(name);
+				if (bag != null) {
+					place_code=bag.getPlace_code();
+					Post_UI2 post = new Post_UI2();
+					post.open();
+					// 화면 닫는거
+					// f.setVisible(false);
+					
 				} else {
-					JOptionPane.showMessageDialog(f, "존재하지 않는 상호명. 재입력해주세요");
-					text_name.setText("");
+					JOptionPane.showMessageDialog(f, "찾으시는 상호명이 없습니다.");
 					text_location.setText("");
 					text_category.setText("");
 					text_grade.setText("");
 					text_tel.setText("");
+					ImageIcon icon = new ImageIcon("first.jpg");
+					label_img.setIcon(icon);
 				}
+				
+				
+
 			}
 		});
+
+		
 		
 		// 예약 창으로 넘기기
 		btn_reservation.addActionListener(new ActionListener() {

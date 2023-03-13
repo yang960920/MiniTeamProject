@@ -61,9 +61,11 @@ public class PostDAO {
 					+ score + " " + write_date + " " + place_code);
 			bag = new PostVO();
 			bag.setPost_no(post_no1);
-			bag.setPw(pw);
-			bag.setName(name);
-			bag.setTel(tel);
+			bag.setTitle(title);
+			bag.setContent(content);
+			bag.setWriter(writer);
+			bag.setScore(score);
+			bag.setPlace_code(place_code);
 			// 검색결과를 검색화면 UI 부분으로 주어야한다.
 			
 		}else {

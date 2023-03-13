@@ -1,11 +1,12 @@
 package 화면연결DB;
 
-public class PostVO {
+public class PostVO2 {
 	private int post_no;
 	private String title;
 	private String content;
 	private String writer;
 	private int score;
+	private String write_date;
 	private String place_code;
 	public int getPost_no() {
 		return post_no;
@@ -37,20 +38,24 @@ public class PostVO {
 	public void setScore(int score) {
 		this.score = score;
 	}
+	public String getWrite_date() {
+		return write_date;
+	}
+	public void setWrite_date(String write_date) {
+		this.write_date = write_date;
+	}
 	public String getPlace_code() {
 		return place_code;
 	}
 	public void setPlace_code(String place_code) {
 		this.place_code = place_code;
 	}
-	
-	
-	@Override
+
+@Override
 	public String toString() {
-		return "PostVO [post_no=" + post_no + ", title=" + title + ", content=" + content + ", writer=" + writer
-				+ ", score=" + score + ", place_code=" + place_code + "]";
+		return "PostVO2 [post_no=" + post_no + ", title=" + title + ", content=" + content + ", writer=" + writer
+				+ ", score=" + score + ", write_date=" + write_date + ", place_code=" + place_code + "]";
 	}
-	
 	
 	
 	
